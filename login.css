@@ -83,7 +83,6 @@
 .login-provider { height: 48px; margin: 7px 0; border-radius: 11px; font-size: 11px; font-weight: 600; }
 .google-provider { border: 1px solid #e7ebe4; background: #fff; color: #445045; box-shadow: 0 2px 4px #31453108; }
 .google-provider:hover { border-color: #cbd8ca; background: #fbfcf9; box-shadow: 0 7px 18px #31453112; }
-.google-mark { left: 20px; font-family: Arial,sans-serif; font-size: 17px; }
 .line-provider { border: 1px solid #06b65c; background: #06b65c; color: #fff; box-shadow: 0 5px 13px #06b65c25; }
 .line-provider:hover { background: #079d51; box-shadow: 0 8px 20px #06b65c32; }
 .line-mark { left: 18px; padding: 3px 5px; border-radius: 5px; background: #fff; color: #06a855; font-size: 8px; }
