@@ -16,8 +16,8 @@ let cloudQueue = Promise.resolve();
 
 const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
 const weekNames = ['週日','週一','週二','週三','週四','週五','週六'];
-const categoryNames = { work: '工作', life: '生活', important: '重要' };
-const categoryColors = { work: 'work', life: 'life', important: 'important' };
+const categoryNames = { work: '工作', life: '生活', important: '重要', other: '其他' };
+const categoryColors = { work: 'work', life: 'life', important: 'important', other: 'other' };
 
 function startOfDay(date) { return new Date(date.getFullYear(), date.getMonth(), date.getDate()); }
 function dateKey(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
@@ -130,15 +130,34 @@ function renderUpcoming() {
   const box=$('#upcoming-list');box.replaceChildren();const end=new Date(today);end.setDate(today.getDate()+14);
   const upcoming=events.filter(e=>{const d=fromKey(e.date);return d>=today&&d<=end;}).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).slice(0,3);
   if(!upcoming.length){const empty=document.createElement('div');empty.className='empty-upcoming';empty.textContent='接下來兩週還沒有行程，留點空白給自己。';box.append(empty);return;}
-  for(const event of upcoming){const date=fromKey(event.date),card=document.createElement('div');card.className='upcoming-card';card.tabIndex=0;card.setAttribute('role','button');card.innerHTML=`<div class="date-badge"><span>${weekNames[date.getDay()]}</span><strong>${date.getDate()}</strong></div><div class="upcoming-copy"><strong>${safeText(event.title)}</strong><span>${event.time||'全天'} · ${categoryNames[event.category]||'生活'}</span></div>`;card.addEventListener('click',()=>openEvent(event.id));card.addEventListener('keydown',e=>{if(e.key==='Enter')openEvent(event.id);});box.append(card);}
+  for(const event of upcoming){const date=fromKey(event.date),card=document.createElement('div');card.className='upcoming-card';card.tabIndex=0;card.setAttribute('role','button');card.innerHTML=`<div class="date-badge"><span>${weekNames[date.getDay()]}</span><strong>${date.getDate()}</strong></div><div class="upcoming-copy"><strong>${safeText(event.title)}</strong><span>${event.time||'全天'} · ${safeText(event.categoryLabel||categoryNames[event.category]||'生活')}</span></div>`;card.addEventListener('click',()=>openEvent(event.id));card.addEventListener('keydown',e=>{if(e.key==='Enter')openEvent(event.id);});box.append(card);}
 }
-function renderCounts(){const counts={work:0,life:0,important:0};for(const e of events){if(counts[e.category]!==undefined)counts[e.category]++;}$('#work-count').textContent=counts.work;$('#life-count').textContent=counts.life;$('#important-count').textContent=counts.important;}
+function renderCounts(){const counts={work:0,life:0,important:0,other:0};for(const e of events){if(counts[e.category]!==undefined)counts[e.category]++;}$('#work-count').textContent=counts.work;$('#life-count').textContent=counts.life;$('#important-count').textContent=counts.important;$('#other-count').textContent=counts.other;}
+function updateOtherCategoryField(){const isOther=$('#event-category').value==='other';$('#other-category-field').hidden=!isOther;$('#other-category').required=isOther;if(!isOther)$('#other-category').value='';}
 function openEventForm(event=null) {
-  $('#event-form').reset();$('#event-id').value=event?.id||'';$('#dialog-title').textContent=event?'編輯行程':'新增行程';$('#event-title').value=event?.title||'';$('#event-date').value=event?.date||dateKey(selectedDate);$('#event-time').value=event?.time||'09:00';$('#event-category').value=event?.category||'work';$('#event-note').value=event?.note||'';$('#delete-event').hidden=!event;$('#event-dialog').showModal();$('#event-title').focus();
+  $('#event-form').reset();$('#event-id').value=event?.id||'';$('#dialog-title').textContent=event?'編輯行程':'新增行程';$('#event-title').value=event?.title||'';$('#event-date').value=event?.date||dateKey(selectedDate);$('#event-time').value=event?.time||'09:00';$('#event-category').value=event?.category||'work';$('#other-category').value=event?.categoryLabel||'';updateOtherCategoryField();$('#event-note').value=event?.note||'';$('#delete-event').hidden=!event;$('#event-dialog').showModal();$('#event-title').focus();
 }
 function openEvent(id){const event=events.find(item=>item.id===id);if(event){selectedDate=fromKey(event.date);cursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);render();openEventForm(event);}}
-$('#new-event').addEventListener('click',()=>openEventForm());$('#close-dialog').addEventListener('click',()=>$('#event-dialog').close());$('#cancel-dialog').addEventListener('click',()=>$('#event-dialog').close());
-$('#event-form').addEventListener('submit',event=>{event.preventDefault();const id=$('#event-id').value||crypto.randomUUID();const item={id,title:$('#event-title').value.trim(),date:$('#event-date').value,time:$('#event-time').value,category:$('#event-category').value,note:$('#event-note').value.trim()};if(!item.title||!item.date)return;persistEvent(item);selectedDate=fromKey(item.date);cursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);$('#event-dialog').close();render();});
+function requestEventCancel() {
+  const isEditing=Boolean($('#event-id').value);
+  $('#cancel-confirm-title').textContent=isEditing?'確定要取消編輯嗎？':'確定要取消新增行程嗎？';
+  $('#cancel-confirm-message').textContent='尚未儲存的內容會被捨棄。';
+  $('#cancel-confirm-dialog').showModal();
+  $('#keep-editing').focus();
+}
+function closeEventWithoutSaving() {
+  if($('#cancel-confirm-dialog').open) $('#cancel-confirm-dialog').close();
+  $('#event-dialog').close();
+}
+$('#new-event').addEventListener('click',()=>openEventForm());
+$('#close-dialog').addEventListener('click',requestEventCancel);
+$('#cancel-dialog').addEventListener('click',requestEventCancel);
+$('#event-dialog').addEventListener('cancel',event=>{event.preventDefault();requestEventCancel();});
+$('#keep-editing').addEventListener('click',()=>{$('#cancel-confirm-dialog').close();$('#event-title').focus();});
+$('#confirm-cancel').addEventListener('click',closeEventWithoutSaving);
+$('#cancel-confirm-dialog').addEventListener('cancel',event=>{event.preventDefault();$('#cancel-confirm-dialog').close();$('#event-title').focus();});
+$('#event-category').addEventListener('change',updateOtherCategoryField);
+$('#event-form').addEventListener('submit',event=>{event.preventDefault();const id=$('#event-id').value||crypto.randomUUID();const category=$('#event-category').value;const categoryLabel=category==='other'?$('#other-category').value.trim():'';const item={id,title:$('#event-title').value.trim(),date:$('#event-date').value,time:$('#event-time').value,category,categoryLabel,note:$('#event-note').value.trim()};if(!item.title||!item.date||(category==='other'&&!categoryLabel))return;persistEvent(item);selectedDate=fromKey(item.date);cursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);$('#event-dialog').close();render();});
 $('#delete-event').addEventListener('click',()=>{const id=$('#event-id').value;if(id&&confirm('確定刪除這個行程嗎？')){removeEvent(id);$('#event-dialog').close();}});
 $('#prev-month').addEventListener('click',()=>{if(view==='month')cursor=new Date(cursor.getFullYear(),cursor.getMonth()-1,1);else selectedDate.setDate(selectedDate.getDate()-7);render();});
 $('#next-month').addEventListener('click',()=>{if(view==='month')cursor=new Date(cursor.getFullYear(),cursor.getMonth()+1,1);else selectedDate.setDate(selectedDate.getDate()+7);render();});
