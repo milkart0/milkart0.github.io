@@ -183,6 +183,14 @@ $('#google-login').addEventListener('click',event=>startSignIn('google',event.cu
 $('#line-login').addEventListener('click',event=>startSignIn('line',event.currentTarget));
 $('#user-button').addEventListener('click',()=>$('#signin-button').click());
 $('#guest-start').addEventListener('click',()=>{guestMode=true;$('#login-screen').hidden=true;$('#app-shell').hidden=false;});
+$('#home-button').addEventListener('click',async()=>{
+  guestMode=false;
+  try {
+    if(firebase) await firebase.signOut(firebase.auth);
+    $('#app-shell').hidden=true;
+    $('#login-screen').hidden=false;
+  } catch(error) { showError(error); }
+});
 $('#aiFab').addEventListener('click',()=>alert('AI 行程助理尚未連線。完成安全的後端 AI API 設定後，就可以在這裡加入行程建議。'));
 
 render(); initializeFirebase();
