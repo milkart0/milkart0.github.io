@@ -10,19 +10,39 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="reference.css">
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
   <div class="login-screen" id="login-screen">
-    <section class="login-card" aria-labelledby="welcome-title">
-      <div class="login-kicker">YOUR PERSONAL SPACE</div>
-      <h1 id="welcome-title">讓每一天，<br>都有自己的節奏。</h1>
-      <p class="login-intro">登入後即可查看你的行程與待辦。</p>
-      <button class="login-provider google-provider" id="google-login"><span class="google-mark">G</span>使用 Google 帳戶登入</button>
-      <button class="login-provider line-provider" id="line-login"><span class="line-mark">LINE</span>使用 LINE 帳戶登入</button>
-      <p class="login-note">登入後，你的資料會與帳戶綁定。</p>
-      <div class="guest-row"><span>還沒設定帳戶？</span><button id="guest-start">先以訪客模式試用</button></div>
-      <p class="privacy-note">只有登入的帳戶可以存取此個人空間</p>
-    </section>
+    <div class="login-layout">
+      <section class="welcome-panel" aria-labelledby="welcome-title">
+        <a class="welcome-brand" href="#" aria-label="Dayflow 首頁"><span class="welcome-mark">D</span><span>dayflow<span class="welcome-brand-sub">PLAN A LITTLE. LIVE A LOT.</span></span></a>
+        <div class="welcome-copy">
+          <div class="login-kicker"><span class="kicker-dot"></span> YOUR PERSONAL SPACE</div>
+          <h1 id="welcome-title">把日子排好，<br><em>留點空間給生活。</em></h1>
+          <p class="login-intro">工作、生活和重要時刻，清楚排在一起。<br>讓每一天更從容，也更接近你想要的樣子。</p>
+          <div class="welcome-tags"><span>✳ 好好安排</span><span>◷ 不再忘記</span><span>♡ 留給自己</span></div>
+        </div>
+        <div class="preview-card" aria-hidden="true">
+          <div class="preview-head"><div><span>YOUR WEEK</span><strong>把本週過好</strong></div><div class="preview-sparkle">✦</div></div>
+          <div class="preview-days"><span>一<strong>24</strong></span><span>二<strong>25</strong></span><span class="preview-today">三<strong>26</strong></span><span>四<strong>27</strong></span><span>五<strong>28</strong></span></div>
+          <div class="preview-task task-green"><i></i><span><strong>完成重要的事</strong><small>09:30 · 工作</small></span><b>✓</b></div>
+          <div class="preview-task task-cream"><i></i><span><strong>留一點時間給自己</strong><small>18:00 · 生活</small></span><b>♡</b></div>
+        </div>
+        <p class="welcome-footnote">一個舒服的節奏，從今天開始。</p>
+      </section>
+      <section class="login-card" aria-label="登入 Dayflow">
+        <div class="card-heading"><span class="card-mark">D</span><span>歡迎回來</span></div>
+        <h2>登入你的日常</h2>
+        <p class="login-card-copy">同步行程，讓重要的事都好好記得。</p>
+        <button class="login-provider google-provider" id="google-login"><span class="google-mark">G</span>使用 Google 帳戶登入</button>
+        <button class="login-provider line-provider" id="line-login"><span class="line-mark">LINE</span>使用 LINE 帳戶登入</button>
+        <div class="login-divider"><span>或</span></div>
+        <button class="guest-button" id="guest-start">先以訪客模式試用 <span>→</span></button>
+        <p class="login-note">登入後，行程會安全地與你的帳戶同步。</p>
+        <p class="privacy-note">你的日常，只屬於你。</p>
+      </section>
+    </div>
     <button class="ai-fab" id="aiFab" aria-label="開啟 AI 助理" title="AI 助理">✦</button>
   </div>
   <div class="app-shell" id="app-shell" hidden>

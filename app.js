@@ -35,6 +35,8 @@ function showError(error) {
   const messages = {
     'auth/unauthorized-domain': '請在 Firebase Authentication 的 Authorized domains 加入目前網站網域。',
     'auth/popup-closed-by-user': '登入視窗已關閉。',
+    'auth/popup-blocked': '瀏覽器封鎖了登入視窗，請允許此網站開啟登入視窗後再試一次。',
+    'auth/operation-not-allowed': '這種登入方式尚未在 Firebase 啟用。LINE 登入需設定 OIDC 提供者。',
     'permission-denied': 'Firestore 權限不足，請部署 firestore.rules。',
   };
   alert(messages[error.code] || `操作失敗：${error.message || error.code || error}`);
