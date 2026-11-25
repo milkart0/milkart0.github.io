@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f3ed">
+  <title>Dayflow｜個人行程與待辦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="reference.css">
+</head>
+<body>
+  <div class="login-screen" id="login-screen">
+    <section class="login-card" aria-labelledby="welcome-title">
+      <div class="login-kicker">YOUR PERSONAL SPACE</div>
+      <h1 id="welcome-title">讓每一天，<br>都有自己的節奏。</h1>
+      <p class="login-intro">登入後即可查看你的行程與待辦。</p>
+      <button class="login-provider google-provider" id="google-login"><span class="google-mark">G</span>使用 Google 帳戶登入</button>
+      <button class="login-provider line-provider" id="line-login"><span class="line-mark">LINE</span>使用 LINE 帳戶登入</button>
+      <p class="login-note">登入後，你的資料會與帳戶綁定。</p>
+      <div class="guest-row"><span>還沒設定帳戶？</span><button id="guest-start">先以訪客模式試用</button></div>
+      <p class="privacy-note">只有登入的帳戶可以存取此個人空間</p>
+    </section>
+    <button class="ai-fab" id="aiFab" aria-label="開啟 AI 助理" title="AI 助理">✦</button>
+  </div>
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Dayflow 首頁"><span class="brand-mark">D</span><span>Dayflow<span class="brand-sub">YOUR PERSONAL SPACE</span></span></a>
+      <button class="primary-button new-event" id="new-event"><span>＋</span> 新增行程</button>
+      <section class="mini-section">
+        <div class="section-heading"><h2>快速選日</h2><div class="mini-controls"><button id="mini-prev" aria-label="上個月">‹</button><button id="mini-next" aria-label="下個月">›</button></div></div>
+        <div class="mini-month-label" id="mini-label"></div>
+        <div class="mini-grid weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+        <div class="mini-grid" id="mini-calendar"></div>
+      </section>
+      <section class="legend-section"><h2>我的行程</h2><div class="legend"><i class="dot dot-blue"></i>工作<div class="legend-count" id="work-count">0</div></div><div class="legend"><i class="dot dot-orange"></i>生活<div class="legend-count" id="life-count">0</div></div><div class="legend"><i class="dot dot-green"></i>重要<div class="legend-count" id="important-count">0</div></div></section>
+      <div class="sidebar-bottom"><div class="avatar">日</div><div class="profile"><strong id="profile-name">訪客模式</strong><span id="sync-label">資料只存在這台裝置</span></div><button class="signin-button" id="signin-button">登入</button></div>
+    </aside>
+    <main class="main-panel">
+      <header class="topbar"><div><div class="eyebrow">把每一天，安排成喜歡的樣子</div><h1>我的行事曆</h1></div><div class="top-actions"><button class="today-button" id="today-button">今天</button><div class="view-switch" role="group" aria-label="檢視模式"><button class="active" data-view="month">月</button><button data-view="week">週</button></div><button class="user-button" id="user-button" aria-label="使用者設定">☰</button></div></header>
+      <div class="calendar-toolbar"><div class="month-navigator"><button class="nav-button" id="prev-month" aria-label="上個月">‹</button><button class="nav-button" id="next-month" aria-label="下個月">›</button><h2 id="current-month"></h2></div><div class="timezone"><span class="live-dot"></span> 本地時間</div></div>
+      <section class="calendar" aria-label="行事曆"><div class="calendar-head"><div>星期日</div><div>星期一</div><div>星期二</div><div>星期三</div><div>星期四</div><div>星期五</div><div>星期六</div></div><div class="calendar-grid" id="calendar-grid"></div></section>
+      <section class="upcoming"><div class="upcoming-title"><div><span class="eyebrow">DON'T FORGET</span><h2>近期行程</h2></div><button class="text-button" id="see-month">查看本月 <span>→</span></button></div><div class="upcoming-list" id="upcoming-list"></div></section>
+      <footer>好好安排，也好好生活。<span>日常行事曆</span></footer>
+    </main>
+  </div>
+  <dialog id="event-dialog" class="event-dialog"><form id="event-form" method="dialog"><div class="dialog-top"><div><span class="eyebrow">MAKE A PLAN</span><h2 id="dialog-title">新增行程</h2></div><button type="button" class="close-button" id="close-dialog" aria-label="關閉">×</button></div><input type="hidden" id="event-id"><label>行程名稱<input id="event-title" required maxlength="80" placeholder="例如：和朋友喝咖啡"></label><div class="form-row"><label>日期<input id="event-date" type="date" required></label><label>時間<input id="event-time" type="time" value="09:00"></label></div><label>分類<select id="event-category"><option value="work">工作</option><option value="life">生活</option><option value="important">重要</option></select></label><label>備註<textarea id="event-note" rows="3" maxlength="240" placeholder="補充地點或提醒…"></textarea></label><div class="dialog-actions"><button type="button" class="delete-button" id="delete-event" hidden>刪除行程</button><span class="spacer"></span><button type="button" class="cancel-button" id="cancel-dialog">取消</button><button class="primary-button save-button" type="submit">儲存行程</button></div></form></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
